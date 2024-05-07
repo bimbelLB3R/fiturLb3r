@@ -1,6 +1,5 @@
 "use server";
 import { getFilteredBakatData } from "@/app/lib/data";
-import Link from "next/link";
 
 export default async function BakatTable({ query, currentPage }) {
   // const gambarAnakku = await gambarAnak();
