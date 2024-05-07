@@ -1,19 +1,12 @@
 import Pagination from "@/app/ui/bakat/pagination";
 import Search from "@/app/ui/search";
 import BakatTable from "@/app/ui/bakat/table";
-import { CreateBakat } from "@/app/ui/bakat/buttons";
 import { lusitana, inter } from "@/app/ui/fonts";
 import { BakatsTableSkeleton } from "@/app/ui/skeletons";
 import { Suspense } from "react";
 import { getBakatData } from "@/app/lib/data";
-import { auth } from "@/app/lib/auth";
-import { redirect } from "next/navigation";
 
 export default async function Bakat({ searchParams }) {
-  // const session = await auth();
-  // if (!session) {
-  //   redirect("/api/auth/signin");
-  // }
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await getBakatData(query);

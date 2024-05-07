@@ -5,7 +5,7 @@ import SessionWrapper from "./ui/sessionWrapper";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Bimbel LB3R",
+  title: "Fitur Bimbel LB3R",
   description: "Fitur-fitur bimbel LB3R",
 };
 
