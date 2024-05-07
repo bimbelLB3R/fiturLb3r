@@ -1,31 +1,42 @@
-import appendToSpreadsheet, {
-  delDataSheet,
-  getDataSheet,
-  updateDataSheet,
-} from "./lib/data";
-import { lusitana, inter } from "./ui/fonts";
+import Pagination from "@/app/ui/bakat/pagination";
+import Search from "@/app/ui/search";
+import BakatTable from "@/app/ui/bakat/table";
+import { CreateBakat } from "@/app/ui/bakat/buttons";
+import { lusitana, inter } from "@/app/ui/fonts";
+import { BakatsTableSkeleton } from "@/app/ui/skeletons";
 import { Suspense } from "react";
-import { CardsSkeleton } from "./ui/skeletons";
-import { CardWrapper } from "./ui/dashboard/cards";
+import { getBakatData } from "@/app/lib/data";
+import { auth } from "@/app/lib/auth";
+import { redirect } from "next/navigation";
 
-export default async function Home() {
-  const newRow = {
-    tanggal: "2024-03-17",
-    aktivitas: "Libur di rumahkuuuu",
-    cerita: "Seru sekaliiiii",
-  };
-  // const data = await getDataSheet();
-  // await appendToSpreadsheet(newRow);
-  // await delDataSheet(newRow.tanggal);
-  // await updateDataSheet(newRow);
+export default async function Bakat({ searchParams }) {
+  // const session = await auth();
+  // if (!session) {
+  //   redirect("/api/auth/signin");
+  // }
+  const query = searchParams?.query || "";
+  const currentPage = Number(searchParams?.page) || 1;
+  const totalPages = await getBakatData(query);
+  // console.log(totalPages);
   return (
-    <>
-      <p className={`text-center ${inter.className}`}>HOME</p>;
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <Suspense fallback={<CardsSkeleton />}>
-          <CardWrapper />
-        </Suspense>
+    <div className="w-full">
+      <div className="flex w-full items-center justify-center">
+        <h1
+          className={`${inter.className} text-2xl text-center font-bold text-blue-600`}
+        >
+          Siswa Bimbel LB3R
+        </h1>
       </div>
-    </>
+      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+        <Search placeholder="Cari Teman disini, ketik nama ..." />
+        {/* <CreateBakat /> */}
+      </div>
+      <Suspense key={query + currentPage} fallback={<BakatsTableSkeleton />}>
+        <BakatTable query={query} currentPage={currentPage} />
+      </Suspense>
+      <div className="mt-5 flex w-full justify-center">
+        <Pagination totalPages={totalPages} />
+      </div>
+    </div>
   );
 }

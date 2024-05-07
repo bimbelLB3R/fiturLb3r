@@ -24,12 +24,11 @@ export default async function Bakat({ searchParams }) {
         <h1
           className={`${inter.className} text-2xl text-center font-bold text-blue-600`}
         >
-          Bakat
+          Data Siswa LB3R
         </h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search bakat..." />
-        <CreateBakat />
       </div>
       <Suspense key={query + currentPage} fallback={<BakatsTableSkeleton />}>
         <BakatTable query={query} currentPage={currentPage} />
