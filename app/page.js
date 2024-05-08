@@ -12,7 +12,7 @@ export default async function Bakat({ searchParams }) {
   const totalPages = await getBakatData(query);
   // console.log(totalPages);
   return (
-    <div className="w-full">
+    <div className="w-full p-4">
       <div className="flex w-full items-center justify-center">
         <h1
           className={`${inter.className} text-2xl text-center font-bold text-blue-600`}

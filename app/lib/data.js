@@ -55,12 +55,13 @@ export async function getFilteredBakatData(query, currentPage) {
         .filter(
           (item) =>
             item.nama_user.toLowerCase().includes(lowerQuery) ||
+            item.asal_user.toLowerCase().includes(lowerQuery) ||
             item.kelas_user.toLowerCase().includes(lowerQuery)
         )
         .sort((a, b) => {
           // Pastikan bahwa Anda memiliki properti yang sesuai untuk tanggal di dalam objek 'item'
-          const dateA = a.email_user;
-          const dateB = b.email_user;
+          const dateA = a.nis;
+          const dateB = b.nis;
           return dateB - dateA;
         }) // Mengurutkan idBakat terbaru ke terlama
         .slice(offset, offset + ITEMS_PER_PAGE);
@@ -71,9 +72,9 @@ export async function getFilteredBakatData(query, currentPage) {
       const filteredRows = rows
         .sort((a, b) => {
           // Pastikan bahwa Anda memiliki properti yang sesuai untuk idBakat di dalam objek 'item'
-          const dateA = a.email_user;
+          const dateA = a.nis;
           // console.log(`dateA=${dateA}`);
-          const dateB = b.email_user;
+          const dateB = b.nis;
           // console.log(`dateB=${dateB}`);
           return dateB - dateA;
         })
