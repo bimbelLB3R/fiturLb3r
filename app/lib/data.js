@@ -111,7 +111,8 @@ export async function getBakatData(query) {
     const bakat = rows.filter(
       (item) =>
         item.nama_user.toLowerCase().includes(queryHrfKecil) ||
-        item.kelas_user.includes(queryHrfKecil)
+        item.kelas_user.includes(queryHrfKecil) ||
+        item.asal_user.includes(queryHrfKecil)
     );
     const totalPages = Math.ceil(Number(bakat.length) / ITEMS_PER_PAGE);
     // console.log(totalPages);
