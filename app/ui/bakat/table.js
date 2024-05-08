@@ -1,5 +1,6 @@
 "use server";
 import { getFilteredBakatData } from "@/app/lib/data";
+import CopyButton from "../copied";
 
 export default async function BakatTable({ query, currentPage }) {
   // const gambarAnakku = await gambarAnak();
@@ -19,18 +20,29 @@ export default async function BakatTable({ query, currentPage }) {
                     <div className="mb-2 flex items-center justify-between space-x-4 ">
                       <div>
                         <p className="first-letter:uppercase">
-                          {bakat.nama_user}
+                          {bakat.nama_user}{" "}
+                          <CopyButton text={bakat.nama_user} />
                         </p>
 
                         <p className="text-[12px] text-gray-500">
-                          {bakat.kelas_user}
+                          {bakat.kelas_user}{" "}
+                          <CopyButton text={bakat.kelas_user} />
                         </p>
                         <p className="text-[12px] text-gray-500">
                           bergabung sejak {bakat.tgl_daftar}
                         </p>
                         <p className="text-[12px] text-gray-500">
-                          dari {bakat.asal_user}
+                          dari {bakat.asal_user}{" "}
+                          <CopyButton text={bakat.asal_user} />
                         </p>
+                        <a
+                          href={`https://api.whatsapp.com/send?phone=+6281392552459&text=Assalamualaikum, saya ingin bergabung les di Bimbel LB3R dengan teman saya ${bakat.nama_user}, dikelas ${bakat.kelas_user}. Terima kasih..`}
+                          className="text-[12px] border-2 p-1 text-blue-600"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Ikut kelas {bakat.nama_user}
+                        </a>
                       </div>
                       <div>
                         <a

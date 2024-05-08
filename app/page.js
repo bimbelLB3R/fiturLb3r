@@ -17,11 +17,11 @@ export default async function Bakat({ searchParams }) {
         <h1
           className={`${inter.className} text-2xl text-center font-bold text-blue-600`}
         >
-          Siswa Bimbel LB3R
+          Cari temen ...
         </h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Cari Teman disini, ketik nama ..." />
+        <Search placeholder="Ketik/paste nama/kelas/asal sekolah ..." />
         {/* <CreateBakat /> */}
       </div>
       <Suspense key={query + currentPage} fallback={<BakatsTableSkeleton />}>
