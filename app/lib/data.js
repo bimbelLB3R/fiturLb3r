@@ -20,9 +20,9 @@ export async function getDataSheet() {
     const rows = await sheet.getRows(); // Mendapatkan semua baris dari lembar kerja
     // const dataFromSheet = rows.map((item) => item.tanggal);
     // console.log(dataFromSheet);
-    const nama = rows.map((item) => item.nama_user);
-    const kelas = rows.map((item) => item.kelas_user);
-    return { nama, kelas };
+    const nama = rows.map((item) => item.nama_user ?? "");
+const kelas = rows.map((item) => item.kelas_user ?? "");
+return { nama, kelas };
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch data from sheet.");
@@ -31,66 +31,67 @@ export async function getDataSheet() {
 
 // bakat
 const ITEMS_PER_PAGE = 6;
+
 export async function getFilteredBakatData(query, currentPage) {
-  // console.log(`currentPAge=${currentPage}`);
-  // console.log(query);
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-  // console.log(`offset=${offset}`);
+
   try {
-    // Autentikasi dengan kredensial
+    console.log("=== START getFilteredBakatData ===");
+    console.log("query =", query);
+    console.log("currentPage =", currentPage);
+    console.log("offset =", offset);
+    console.log("SPREADSHEET_ID =", SPREADSHEET_ID);
+    console.log("SHEET_ID1 =", SHEET_ID1);
+
+    // Autentikasi
     await doc.useServiceAccountAuth({
       client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
       private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
     });
+    console.log("✅ Auth success");
 
-    // Load informasi lembar kerja
     await doc.loadInfo();
+    console.log("✅ Spreadsheet title:", doc.title);
 
-    const sheet = doc.sheetsById[SHEET_ID1]; // Misalnya, mengambil lembar kerja pertama
-    const rows = await sheet.getRows(); // Mendapatkan semua baris dari lembar kerja
-    // let filteredRows = rows;
+    const sheet = doc.sheetsById[SHEET_ID1];
+    if (!sheet) {
+      throw new Error(`Sheet dengan ID ${SHEET_ID1} tidak ditemukan`);
+    }
+    console.log("✅ Sheet title:", sheet.title);
+
+    const rows = await sheet.getRows();
+    console.log("✅ Rows fetched:", rows.length);
+    if (rows.length > 0) {
+      console.log("Row sample:", rows[0]);
+      console.log("Row keys:", Object.keys(rows[0]));
+    }
+
+    let filteredRows = rows;
+
     if (query) {
       const lowerQuery = query.toLowerCase();
-      const filteredRows = rows
-        .filter(
-          (item) =>
-            item.nama_user.toLowerCase().includes(lowerQuery) ||
-            item.asal_user.toLowerCase().includes(lowerQuery) ||
-            item.kelas_user.toLowerCase().includes(lowerQuery)
-        )
-        .sort((a, b) => {
-          // Pastikan bahwa Anda memiliki properti yang sesuai untuk tanggal di dalam objek 'item'
-          const dateA = a.nis;
-          const dateB = b.nis;
-          return dateB - dateA;
-        }) // Mengurutkan idBakat terbaru ke terlama
-        .slice(offset, offset + ITEMS_PER_PAGE);
-
-      return filteredRows;
-    }
-    if (!query) {
-      const filteredRows = rows
-        .sort((a, b) => {
-          // Pastikan bahwa Anda memiliki properti yang sesuai untuk idBakat di dalam objek 'item'
-          const dateA = a.nis;
-          // console.log(`dateA=${dateA}`);
-          const dateB = b.nis;
-          // console.log(`dateB=${dateB}`);
-          return dateB - dateA;
-        })
-        .slice(offset, offset + ITEMS_PER_PAGE); // Mengurutkan tanggal terbaru ke terlama.slice(offset, offset + ITEMS_PER_PAGE);
-      return filteredRows;
+      filteredRows = rows.filter(
+        (item) =>
+          (item.nama_user || "").toLowerCase().includes(lowerQuery) ||
+          (item.asal_user || "").toLowerCase().includes(lowerQuery) ||
+          (item.kelas_user || "").toLowerCase().includes(lowerQuery)
+      );
+      console.log("✅ Filtered rows (query):", filteredRows.length);
     }
 
-    // Batasi jumlah data yang dikembalikan menjadi 6
-    const bakats = filteredRows;
+    filteredRows = filteredRows
+      .sort((a, b) => Number(b.nis) - Number(a.nis))
+      .slice(offset, offset + ITEMS_PER_PAGE);
 
-    return bakats;
+    console.log("✅ Final rows returned:", filteredRows.length);
+
+    return filteredRows;
   } catch (error) {
-    console.error("Database Error:", error);
+    console.error("❌ Database Error detail:", error);
     throw new Error("Failed to fetch data from bakat.");
   }
 }
+
 
 export async function getBakatData(query) {
   try {
@@ -105,15 +106,17 @@ export async function getBakatData(query) {
 
     const sheet = doc.sheetsById[SHEET_ID1]; // Misalnya, mengambil lembar kerja pertama
     const rows = await sheet.getRows(); // Mendapatkan semua baris dari lembar kerja
-    // const dataFromSheet = rows.map((item) => item.tanggal);
+    // const dataFromSheet = rows.map((item) => item.tgl_daftar);
     // console.log(dataFromSheet);
     const queryHrfKecil = query.toLowerCase();
-    const bakat = rows.filter(
-      (item) =>
-        item.nama_user.toLowerCase().includes(queryHrfKecil) ||
-        item.kelas_user.includes(queryHrfKecil) ||
-        item.asal_user.includes(queryHrfKecil)
-    );
+    // console.log(queryHrfKecil);
+    const bakat = rows.filter((item) =>
+  item.nama_user?.toLowerCase().includes(queryHrfKecil) ||
+  item.kelas_user?.includes(queryHrfKecil) ||
+  item.asal_user?.includes(queryHrfKecil)
+);
+
+    // console.log(bakat);
     const totalPages = Math.ceil(Number(bakat.length) / ITEMS_PER_PAGE);
     // console.log(totalPages);
     return totalPages;
